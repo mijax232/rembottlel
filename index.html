@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RemBottle — Te Cuida, Te Avisa, Te Acompaña</title>
+<link rel="icon" type="image/png" href="rembottle-favicon.png">
+<link rel="apple-touch-icon" href="rembottle-favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F8F9FF;
+    --bg-alt: #EEF1FF;
+    --ink: #101458;
+    --ink-soft: #555A85;
+    --teal: #1459E9;
+    --teal-deep: #101458;
+    --mint: #E3E8FF;
+    --coral: #8B16E8;
+    --coral-soft: #ECD9FF;
+    --line: rgba(16,20,88,0.13);
+    --radius: 22px;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  img,svg{display:block; max-width:100%;}
+  a{color:inherit;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+  @media(max-width:640px){.wrap{padding:0 20px;}}
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(248,249,255,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:76px;
+  }
+  .logo{
+    font-family:var(--display); font-weight:700; font-size:1.35rem;
+    display:flex; align-items:center; gap:8px; letter-spacing:-0.02em;
+  }
+  .logo-dot{width:9px; height:9px; border-radius:50%; background:var(--coral); animation:blink 2.6s ease-in-out infinite;}
+  @keyframes blink{0%,100%{opacity:1;} 50%{opacity:.25;}}
+  .nav-links{display:flex; gap:36px; font-size:0.95rem; font-weight:500;}
+  .nav-links a{text-decoration:none; color:var(--ink-soft); transition:color .2s;}
+  .nav-links a:hover{color:var(--ink);}
+  .nav-cta{
+    background:var(--teal); color:#fff; border:none; padding:11px 22px;
+    border-radius:999px; font-family:var(--body); font-weight:600; font-size:0.9rem;
+    cursor:pointer; transition:transform .18s ease, background .2s;
+  }
+  .nav-cta:hover{background:var(--teal-deep); transform:translateY(-1px);}
+  @media(max-width:780px){.nav-links{display:none;}}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:88px 0 60px;
+    display:grid; grid-template-columns:1.05fr 0.95fr; gap:40px; align-items:center;
+  }
+  @media(max-width:900px){.hero{grid-template-columns:1fr; padding:56px 0 40px;}}
+  .eyebrow{
+    font-family:var(--mono); font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--coral); display:flex; align-items:center; gap:10px; margin-bottom:22px;
+  }
+  .eyebrow::before{content:''; width:22px; height:1px; background:var(--coral);}
+  h1{
+    font-family:var(--display); font-weight:700; letter-spacing:-0.03em;
+    font-size:clamp(2.4rem, 5vw, 3.6rem); line-height:1.04; color:var(--teal-deep);
+  }
+  .hero p.lead{
+    margin-top:22px; font-size:1.13rem; color:var(--ink-soft); max-width:480px;
+  }
+  .hero-actions{display:flex; gap:14px; margin-top:34px; flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--coral); color:#fff; border:none; padding:15px 28px;
+    border-radius:999px; font-weight:600; font-size:0.98rem; cursor:pointer;
+    box-shadow:0 10px 24px -8px rgba(91,45,213,0.55);
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 14px 28px -8px rgba(91,45,213,0.65);}
+  .btn-ghost{
+    background:transparent; border:1px solid var(--line); color:var(--ink);
+    padding:15px 24px; border-radius:999px; font-weight:600; font-size:0.98rem; cursor:pointer;
+    transition:border-color .2s, background .2s;
+  }
+  .btn-ghost:hover{border-color:var(--teal); background:rgba(22,63,62,0.05);}
+
+  .hero-trust{display:flex; gap:26px; margin-top:38px; font-size:0.85rem; color:var(--ink-soft);}
+  .hero-trust span{font-family:var(--mono); color:var(--teal); font-weight:500;}
+
+  /* ---------- HERO VISUAL: pulse bottle ---------- */
+  .hero-visual{
+    position:relative; display:flex; align-items:center; justify-content:center;
+    min-height:420px;
+  }
+  .pulse-ring{
+    position:absolute; border-radius:50%; border:1.5px solid var(--coral);
+    opacity:0; animation:pulse 3.2s cubic-bezier(.2,.7,.3,1) infinite;
+  }
+  .pulse-ring.r1{width:180px; height:180px; animation-delay:0s;}
+  .pulse-ring.r2{width:180px; height:180px; animation-delay:1.05s;}
+  .pulse-ring.r3{width:180px; height:180px; animation-delay:2.1s;}
+  @keyframes pulse{
+    0%{transform:scale(1); opacity:0.55;}
+    100%{transform:scale(2.5); opacity:0;}
+  }
+  .bottle-card{
+    position:relative; z-index:2; background:#fff; border-radius:28px;
+    padding:38px 30px 26px; box-shadow:0 30px 60px -24px rgba(16,32,31,0.28);
+    display:flex; flex-direction:column; align-items:center; width:280px;
+  }
+  .reminder-tag{
+    position:absolute; top:22px; right:22px; background:var(--teal-deep); color:#fff;
+    font-family:var(--mono); font-size:0.72rem; padding:6px 10px; border-radius:8px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .reminder-tag .live-dot{width:6px; height:6px; border-radius:50%; background:var(--coral); animation:blink 2.2s ease-in-out infinite;}
+  .countdown{
+    font-family:var(--mono); font-size:0.82rem; color:var(--ink-soft); margin-top:16px; text-align:center;
+  }
+  .countdown b{color:var(--teal-deep); font-size:1rem;}
+
+  /* ---------- SECTION HEADER ---------- */
+  .section-head{max-width:560px; margin-bottom:52px;}
+  .section-head .eyebrow{margin-bottom:14px;}
+  .section-head h2{
+    font-family:var(--display); font-weight:700; letter-spacing:-0.02em;
+    font-size:clamp(1.7rem,3vw,2.3rem); color:var(--teal-deep);
+  }
+  .section-head p{margin-top:14px; color:var(--ink-soft); font-size:1.03rem;}
+
+  /* ---------- FEATURES ---------- */
+  .features{padding:80px 0;}
+  .feature-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  @media(max-width:900px){.feature-grid{grid-template-columns:1fr;}}
+  .feature-card{
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+    padding:32px 28px; transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .feature-card:hover{transform:translateY(-4px); box-shadow:0 20px 40px -20px rgba(16,32,31,0.25);}
+  .feature-icon{
+    width:46px; height:46px; border-radius:14px; background:var(--mint);
+    display:flex; align-items:center; justify-content:center; margin-bottom:22px;
+  }
+  .feature-card h3{
+    font-family:var(--display); font-size:1.15rem; font-weight:600; margin-bottom:10px; color:var(--teal-deep);
+  }
+  .feature-card p{color:var(--ink-soft); font-size:0.95rem;}
+
+  /* ---------- HOW IT WORKS ---------- */
+  .how{padding:80px 0; background:var(--bg-alt); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .how-flow{display:flex; flex-direction:column; gap:0;}
+  .how-step{
+    display:grid; grid-template-columns:120px 1fr; gap:24px; padding:26px 0;
+    border-bottom:1px solid var(--line); align-items:start;
+  }
+  .how-step:last-child{border-bottom:none;}
+  .how-step .time{font-family:var(--mono); color:var(--coral); font-size:0.9rem; padding-top:4px;}
+  .how-step h4{font-family:var(--display); font-weight:600; font-size:1.15rem; margin-bottom:6px; color:var(--teal-deep);}
+  .how-step p{color:var(--ink-soft); font-size:0.95rem; max-width:520px;}
+  @media(max-width:640px){.how-step{grid-template-columns:1fr; gap:6px;}}
+
+  /* ---------- PRODUCT / BUY ---------- */
+  .buy{padding:90px 0;}
+  .buy-panel{
+    background:var(--teal-deep); border-radius:32px; padding:56px;
+    display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center;
+    color:#fff; position:relative; overflow:hidden;
+  }
+  @media(max-width:900px){.buy-panel{grid-template-columns:1fr; padding:40px 26px;}}
+  .buy-panel::before{
+    content:''; position:absolute; width:420px; height:420px; border-radius:50%;
+    background:radial-gradient(circle, rgba(139,22,232,0.28), transparent 70%);
+    top:-140px; right:-120px;
+  }
+  .buy-copy{position:relative; z-index:1;}
+  .buy-copy .eyebrow{color:var(--coral-soft);}
+  .buy-copy .eyebrow::before{background:var(--coral-soft);}
+  .buy-copy h2{font-family:var(--display); font-size:clamp(1.6rem,3vw,2.1rem); font-weight:700; letter-spacing:-0.02em; margin-bottom:16px;}
+  .buy-copy p{color:rgba(255,255,255,0.78); max-width:420px; margin-bottom:28px;}
+  .price-row{display:flex; align-items:baseline; gap:10px; margin-bottom:26px;}
+  .price{font-family:var(--display); font-size:2.6rem; font-weight:700;}
+  .price-note{font-family:var(--mono); font-size:0.82rem; color:rgba(255,255,255,0.6);}
+  .colorways{position:relative; z-index:1; display:flex; flex-direction:column; gap:14px;}
+  .colorway{
+    display:flex; align-items:center; gap:16px; background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.14); border-radius:16px; padding:14px 18px;
+    cursor:pointer; transition:background .2s, border-color .2s;
+  }
+  .colorway:hover, .colorway.active{background:rgba(255,255,255,0.12); border-color:rgba(255,255,255,0.35);}
+  .swatch{width:30px; height:30px; border-radius:50%; flex-shrink:0; border:2px solid rgba(255,255,255,0.5);}
+  .colorway-name{font-weight:600; font-size:0.95rem;}
+  .colorway-note{font-size:0.8rem; color:rgba(255,255,255,0.6);}
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:48px 0 40px; border-top:1px solid var(--line);}
+  .footer-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
+  .footer-row .logo{font-size:1.1rem;}
+  .footer-links{display:flex; gap:24px; font-size:0.88rem; color:var(--ink-soft);}
+  .footer-links a{text-decoration:none;}
+  .footer-links a:hover{color:var(--ink);}
+  .footer-note{margin-top:22px; font-size:0.8rem; color:var(--ink-soft); font-family:var(--mono);}
+
+  /* ---------- PREMIUM REFRESH ---------- */
+  body{background:linear-gradient(180deg,#f8fbfa 0%,#f1f7f5 42%,#f8fbfa 100%);overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.55;background-image:radial-gradient(rgba(22,63,62,.1) .6px,transparent .6px);background-size:18px 18px;mask-image:linear-gradient(to bottom,black,transparent 58%);}
+  header{background:rgba(248,251,250,.78);border-bottom-color:rgba(16,32,31,.08);}
+  nav.wrap{height:82px;}.logo{font-size:1.45rem;}.logo-dot{width:11px;height:11px;box-shadow:0 0 0 5px rgba(139,22,232,.14);}
+  .nav-links{gap:30px;}.nav-links a{position:relative;}.nav-links a::after{content:'';position:absolute;left:0;bottom:-7px;width:100%;height:2px;background:var(--coral);transform:scaleX(0);transform-origin:right;transition:transform .25s ease;}.nav-links a:hover::after{transform:scaleX(1);transform-origin:left;}
+  .nav-cta{box-shadow:0 8px 18px -10px rgba(12,40,39,.7);}
+  .hero{position:relative;padding:104px 0 82px;gap:68px;}.hero::after{content:'CUIDADO DIARIO';position:absolute;right:-28px;top:32px;font:500 .72rem var(--mono);letter-spacing:.18em;color:rgba(22,63,62,.32);writing-mode:vertical-rl;}
+  h1{font-size:clamp(2.8rem,5.4vw,4.45rem);line-height:.98;max-width:650px;}.hero p.lead{font-size:1.12rem;line-height:1.7;}
+  .hero-trust{border-top:1px solid var(--line);padding-top:20px;gap:0;max-width:520px;}.hero-trust div{padding:0 18px;border-right:1px solid var(--line);}.hero-trust div:first-child{padding-left:0;}.hero-trust div:last-child{border:0;}.hero-trust span{display:block;font-family:var(--display);font-size:1.15rem;line-height:1.05;}
+  .hero-visual{min-height:500px;isolation:isolate;}.hero-visual::before{content:'';position:absolute;width:390px;height:390px;border-radius:38% 62% 56% 44% / 42% 44% 56% 58%;background:linear-gradient(145deg,#dcece6,#b5d6ca);transform:rotate(-16deg);z-index:-1;box-shadow:inset 0 0 0 1px rgba(22,63,62,.08);}
+  .bottle-card{width:302px;padding:42px 34px 30px;border:1px solid rgba(255,255,255,.9);box-shadow:0 35px 65px -26px rgba(12,40,39,.38);}.bottle-card::after{content:'REM / 01';position:absolute;bottom:13px;left:18px;color:rgba(16,32,31,.35);font:500 .6rem var(--mono);letter-spacing:.12em;}.reminder-tag{top:18px;right:18px;}
+  .section-head{margin-bottom:42px;}.features{padding:96px 0;}.feature-grid{gap:18px;}.feature-card{position:relative;padding:34px 30px;overflow:hidden;box-shadow:0 4px 0 rgba(16,32,31,.03);}.feature-card::after{content:'';position:absolute;right:-28px;bottom:-36px;width:118px;height:118px;border-radius:50%;background:var(--mint);opacity:.35;transition:transform .25s ease;}.feature-card:hover::after{transform:scale(1.35);}.feature-card>*{position:relative;z-index:1;}.feature-icon{border:1px solid rgba(22,63,62,.1);}
+  .how{position:relative;padding:96px 0;background:linear-gradient(115deg,#e5f0ec,#eef5f2);}.how-flow{counter-reset:step;max-width:820px;}.how-step{grid-template-columns:132px 1fr;padding:30px 0;}.how-step .time{font-size:1rem;}.how-step .time::before{counter-increment:step;content:'0' counter(step);display:block;color:rgba(22,63,62,.35);font-size:.68rem;margin-bottom:5px;letter-spacing:.08em;}
+  .buy{padding:108px 0;}.buy-panel{padding:64px;border-radius:36px;box-shadow:0 28px 55px -28px rgba(12,40,39,.55);}.buy-panel::after{content:'';position:absolute;inset:12px;border:1px solid rgba(255,255,255,.11);border-radius:25px;pointer-events:none;}.colorway{padding:16px 18px;}footer{padding-top:56px;}
+  @media(max-width:900px){.hero{gap:24px;padding-top:68px;}.hero::after{display:none;}.hero-visual{min-height:390px;}.buy-panel{padding:42px 28px;}}
+  @media(max-width:640px){nav.wrap{height:72px;}.nav-cta{padding:10px 14px;font-size:.8rem;}.logo{font-size:1.22rem;}.hero{padding-top:54px;}.hero-trust{font-size:.74rem;}.hero-trust div{padding:0 10px;}.hero-visual::before{width:300px;height:300px;}.bottle-card{transform:scale(.9);}.features,.how,.buy{padding:70px 0;}}
+  /* ---------- REMBOTTLE BLUE / VIOLET THEME ---------- */
+  body{background:linear-gradient(180deg,#fafbff 0%,#f0f3ff 48%,#fbfaff 100%);}
+  body::before{background-image:radial-gradient(rgba(20,89,233,.16) .6px,transparent .6px);}
+  .logo{color:var(--teal-deep);}.logo-dot{background:linear-gradient(135deg,#1670f5,#8b16e8);}
+  .brand-lockup{display:flex;flex-direction:column;gap:1px;}.brand-tagline{font:500 .58rem var(--mono);letter-spacing:.035em;color:#6c58bc;white-space:nowrap;}
+  .nav-cta,.btn-primary{background:linear-gradient(110deg,#1459e9,#8b16e8);}.nav-cta:hover{background:#101458;}.btn-primary{box-shadow:0 12px 26px -10px rgba(101,45,214,.55);}
+  .eyebrow,.how-step .time{color:#7a16d3;}.eyebrow::before{background:#7a16d3;}
+  .hero-visual::before{background:linear-gradient(145deg,#dce7ff,#ecd9ff);}.pulse-ring{border-color:#8b16e8;}.reminder-tag{background:#101458;}
+  .feature-icon{background:#e4e9ff;}.how{background:linear-gradient(115deg,#e9eeff,#f6ecff);}.buy-panel{background:linear-gradient(135deg,#101458,#281275 58%,#6411c5);}
+  .theme-toggle,.cart-toggle{border:1px solid var(--line);background:#fff;color:var(--teal-deep);border-radius:999px;cursor:pointer;font:600 .82rem var(--body);padding:10px 14px;transition:.2s ease;}.theme-toggle:hover,.cart-toggle:hover{transform:translateY(-1px);border-color:#8b16e8;}.nav-actions{display:flex;gap:9px;align-items:center;}.cart-toggle{position:relative;}.cart-count{display:inline-grid;place-items:center;min-width:18px;height:18px;margin-left:4px;border-radius:50%;background:#8b16e8;color:#fff;font-size:.67rem;}
+  .details{padding:32px 0 96px;}.details-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;}.detail-main,.detail-specs{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:34px;}.detail-main h2{font:700 clamp(1.65rem,3vw,2.25rem)/1.1 var(--display);color:var(--teal-deep);max-width:600px;}.detail-main p{margin-top:15px;color:var(--ink-soft);max-width:680px;}.pill-list{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px;}.pill{border-radius:999px;background:#edf0ff;color:#2b258d;padding:8px 12px;font-size:.81rem;font-weight:600;}.detail-specs h3{font-family:var(--display);color:var(--teal-deep);margin-bottom:17px;}.spec{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);font-size:.9rem;}.spec:last-child{border:0}.spec span:last-child{font-weight:600;color:var(--teal-deep);text-align:right;}
+  .purchase-includes{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;margin:0 0 26px;padding:18px 0;border-top:1px solid rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.18);font-size:.84rem;color:rgba(255,255,255,.88);}.purchase-includes span::before{content:'✓';color:#cbb6ff;font-weight:700;margin-right:8px;}.colorway.active{outline:2px solid #c5b2ff;outline-offset:2px;}.cart-drawer{position:fixed;top:0;right:0;z-index:100;width:min(410px,100%);height:100dvh;padding:26px;background:#fff;box-shadow:-24px 0 60px rgba(16,20,88,.2);transform:translateX(105%);transition:transform .3s ease;display:flex;flex-direction:column;}.cart-drawer.open{transform:translateX(0);}.cart-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:18px;}.cart-head h2{font:700 1.4rem var(--display);color:var(--teal-deep);}.icon-close{border:0;background:transparent;font-size:1.55rem;cursor:pointer;color:var(--ink-soft);}.cart-item{display:none;gap:14px;padding:24px 0;border-bottom:1px solid var(--line);}.cart-item.visible{display:flex;}.cart-thumb{width:54px;height:70px;border-radius:12px;background:linear-gradient(145deg,#d9e5ff,#eedcff);display:grid;place-items:center;font-size:1.7rem;}.cart-info{flex:1}.cart-info h3{font:.95rem var(--display);color:var(--teal-deep);}.cart-info p{margin-top:3px;font-size:.8rem;color:var(--ink-soft);}.cart-price{margin-top:8px;font-weight:700;color:#5b18bd;}.cart-foot{margin-top:auto;padding-top:18px;border-top:1px solid var(--line);}.cart-total{display:flex;justify-content:space-between;font-weight:700;margin-bottom:16px;color:var(--teal-deep);}.checkout{width:100%;}.cart-empty{padding:35px 0;color:var(--ink-soft);text-align:center;}.cart-drawer.has-item .cart-empty{display:none;}.cart-drawer.has-item .cart-item{display:flex;}.checkout:disabled{opacity:.45;cursor:not-allowed;}.purchase-confirm{display:none;margin-top:12px;color:#e5d5ff;font-size:.86rem;}.purchase-confirm.show{display:block;}
+  body.dark{--bg:#0b0d31;--bg-alt:#151844;--ink:#f3f4ff;--ink-soft:#b9bddf;--teal:#5c93ff;--teal-deep:#f3f4ff;--mint:#20275e;--line:rgba(218,222,255,.17);background:linear-gradient(180deg,#0b0d31,#101341);}.dark header{background:rgba(11,13,49,.82);}.dark .feature-card,.dark .detail-main,.dark .detail-specs,.dark .cart-drawer,.dark .theme-toggle,.dark .cart-toggle{background:#151844;color:var(--ink);}.dark .feature-card::after{opacity:.16;}.dark .pill{background:#262a68;color:#d9dbff;}.dark .hero-visual::before{background:linear-gradient(145deg,#17255f,#482184);}.dark .how{background:linear-gradient(115deg,#151944,#25164d);}.dark .feature-icon{background:#242967;}.dark .bottle-card{background:#f8f9ff;}.dark .nav-links a,.dark .cart-info p{color:var(--ink-soft);}.dark .cart-head h2,.dark .cart-info h3,.dark .cart-total,.dark .detail-main h2,.dark .detail-specs h3,.dark .spec span:last-child{color:var(--ink);}.dark .cart-thumb{background:#272d6e;}.dark .theme-toggle,.dark .cart-toggle{border-color:rgba(255,255,255,.18);}
+  @media(max-width:780px){.nav-actions .cart-toggle{padding:10px;}.nav-actions .cart-toggle .cart-label{display:none;}.theme-toggle{font-size:0;padding:10px;}.theme-toggle::after{content:'◐';font-size:1rem;}.details-grid{grid-template-columns:1fr;}.purchase-includes{grid-template-columns:1fr;}.nav-cta{display:none;}}
+  /* Full-width routine section avoids a visible cutout in dark mode */
+  .how.wrap{max-width:none;margin:0;padding-left:max(32px,calc((100% - 1116px)/2));padding-right:max(32px,calc((100% - 1116px)/2));}
+  .quantity{display:flex;align-items:center;gap:10px;margin-top:12px;}.quantity-label{font-size:.8rem;color:var(--ink-soft);margin-right:auto;}.qty-btn{width:29px;height:29px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--teal-deep);font-size:1.1rem;cursor:pointer;line-height:1;}.qty-value{min-width:18px;text-align:center;font-weight:700;color:var(--teal-deep);}.dark .qty-btn{color:var(--ink);}.dark .qty-value{color:var(--ink);}
+  .checkout-modal{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:20px;background:rgba(5,7,35,.62);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:.2s ease;}.checkout-modal.open{opacity:1;visibility:visible;}.checkout-card{width:min(710px,100%);max-height:92dvh;overflow:auto;background:#fff;border-radius:24px;padding:30px;box-shadow:0 30px 80px rgba(0,0,0,.3);transform:translateY(14px);transition:.2s ease;}.checkout-modal.open .checkout-card{transform:translateY(0);}.checkout-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:22px;}.checkout-top h2{font:700 1.65rem var(--display);color:#101458;}.checkout-top p{color:#656a91;font-size:.9rem;margin-top:4px;}.checkout-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;}.field{display:flex;flex-direction:column;gap:6px;}.field.full{grid-column:1/-1;}.field label{font-size:.79rem;font-weight:700;color:#303567;}.field input,.field select{width:100%;border:1px solid #d8dcf4;border-radius:10px;padding:12px;background:#fff;color:#101458;font:400 .92rem var(--body);outline:none;}.field input:focus,.field select:focus{border-color:#7d28df;box-shadow:0 0 0 3px rgba(139,22,232,.12);}.form-divider{grid-column:1/-1;margin:8px 0 0;padding-top:18px;border-top:1px solid #e5e7f4;font:700 1rem var(--display);color:#101458;}.checkout-note{grid-column:1/-1;font-size:.76rem;color:#6c7094;}.checkout-submit{grid-column:1/-1;margin-top:4px;}.checkout-success{display:none;text-align:center;padding:32px 12px;color:#101458;}.checkout-success.show{display:block;}.checkout-success h2{font:700 1.65rem var(--display);margin:12px 0 7px;}.checkout-success .success-icon{width:56px;height:56px;display:grid;place-items:center;margin:auto;border-radius:50%;background:#e8e1ff;color:#721bd0;font-size:1.7rem;font-weight:700;}.checkout-card.complete .checkout-top,.checkout-card.complete .checkout-form{display:none;}.checkout-card.complete .checkout-success{display:block;}.dark .checkout-card{background:#161944;}.dark .checkout-top h2,.dark .field label,.dark .form-divider,.dark .checkout-success{color:#f1f2ff;}.dark .checkout-top p,.dark .checkout-note{color:#b9bddf;}.dark .field input,.dark .field select{background:#0d1034;border-color:#373b78;color:#f1f2ff;}.dark .checkout-card .icon-close{color:#d6d8f5;}@media(max-width:640px){.how.wrap{padding-left:20px;padding-right:20px;}.checkout-card{padding:24px 18px;}.checkout-form{grid-template-columns:1fr;}.field.full,.form-divider,.checkout-note,.checkout-submit{grid-column:auto;}}
+  .dark .brand-tagline{color:#ba9cff;}@media(max-width:640px){.brand-tagline{font-size:.47rem;letter-spacing:0;}}
+  /* ---------- CHECKOUT MARKETPLACE ---------- */
+  .checkout-modal{overflow-y:auto;align-items:start;padding:28px 20px;pointer-events:none;}
+  .checkout-card{width:min(1180px,100%);margin:0 auto 28px;padding:0;overflow:hidden;background:#f7f8ff;border:1px solid #dfe1fb;pointer-events:auto;}
+  .checkout-top{padding:28px 36px;background:linear-gradient(115deg,#101458,#4c168f 62%,#8b16e8);color:#fff;margin:0;align-items:center;}
+  .checkout-top h2{color:#fff;font-size:1.8rem;}.checkout-top p{color:#e3d6ff;}.checkout-top .icon-close{color:#fff;}
+  .checkout-form{display:block;padding:28px 36px 34px;}.checkout-card.complete .checkout-form{display:none;}
+  .checkout-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(290px,.75fr);gap:24px;align-items:start;}
+  .checkout-main{display:grid;gap:18px;}.checkout-box{background:#fff;border:1px solid #e2e4f4;border-radius:18px;padding:20px;box-shadow:0 7px 20px rgba(16,20,88,.05);}
+  .checkout-box h3{font-family:var(--display);font-size:1rem;color:#101458;margin:0;}.checkout-box-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;}.edit-button{border:0;background:#eef0ff;color:#45209c;padding:7px 10px;border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;}.checkout-address{border-left:4px solid #1459e9;background:linear-gradient(90deg,#f1f5ff,#fff);padding:13px 15px;border-radius:10px;display:grid;gap:3px;font-size:.83rem;}.checkout-address b{color:#101458;}.checkout-address small{color:#676b99;}.delivery-strip{display:flex;gap:12px;align-items:center;background:linear-gradient(100deg,#dff8e8,#effff3);border:1px solid #c7eed5;color:#166537;border-radius:12px;padding:12px 14px;font-size:.82rem;font-weight:600;}.delivery-strip strong{font-size:1.1rem;}.delivery-strip small{color:#397b51;font-weight:500;}
+  .checkout-product{display:grid;grid-template-columns:86px 1fr auto;gap:14px;align-items:center;}.checkout-product-art{width:86px;height:96px;border-radius:14px;background:linear-gradient(135deg,#dfeaff,#eedcff);display:grid;place-items:center;font-size:2.5rem;}.checkout-product h4{font-family:var(--display);font-size:1rem;color:#101458;margin:0 0 4px;}.checkout-product p{font-size:.78rem;color:#666b97;margin:0;}.checkout-product-price{color:#5b18bd;font-family:var(--display);font-size:1.15rem;font-weight:700;text-align:right;}.checkout-product-price small{display:block;color:#7478a0;font:500 .67rem var(--mono);margin-top:4px;}.select-qty{margin-top:10px;border:1px solid #d7daf1;border-radius:8px;padding:6px 8px;color:#101458;background:#fff;font-size:.78rem;}
+  .payment-options{display:grid;gap:9px;}.payment-choice{width:100%;border:1px solid #e1e3f1;background:#fff;border-radius:12px;padding:12px;display:flex;align-items:center;gap:11px;text-align:left;color:#101458;cursor:pointer;}.payment-choice.active{border-color:#7b2bde;box-shadow:0 0 0 2px #8b16e819;background:#faf7ff;}.payment-choice input{accent-color:#7b2bde;}.payment-logo{width:42px;height:28px;border-radius:7px;display:grid;place-items:center;font-weight:800;font-size:.7rem;color:#fff;background:#009ee3;}.payment-logo.visa{background:#1a4baf;font-style:italic;}.payment-logo.master{background:linear-gradient(90deg,#eb1c24 0 48%,#ffae00 52%);font-size:0;}.payment-choice span{flex:1;}.payment-choice span b,.payment-choice span small{display:block;}.payment-choice span b{font-size:.82rem;}.payment-choice span small{font-size:.68rem;color:#72769e;margin-top:2px;}.payment-choice i{color:#7b2bde;font-style:normal;font-weight:800;opacity:0;}.payment-choice.active i{opacity:1;}
+  .order-summary{position:sticky;top:106px;background:#101458;color:#fff;border-radius:19px;padding:22px;box-shadow:0 18px 36px rgba(16,20,88,.22);}.order-summary h3{font-family:var(--display);font-size:1.15rem;margin:0 0 18px;}.coupon-row{display:flex;gap:7px;margin-bottom:16px;}.coupon-row input{min-width:0;flex:1;padding:10px;border-radius:8px;border:1px solid #7277bd;background:#181d65;color:#fff;font-size:.75rem;}.coupon-row input::placeholder{color:#c3c6eb;}.coupon-row button{border:0;border-radius:8px;background:#fff;color:#251275;font-size:.73rem;font-weight:800;padding:0 11px;cursor:pointer;}.summary-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;color:#d9dbff;font-size:.8rem;border-bottom:1px solid rgba(255,255,255,.14);}.summary-row strong{color:#fff;}.summary-row .free{color:#86f0b3;}.summary-total{display:flex;justify-content:space-between;align-items:end;padding:18px 0 12px;}.summary-total span{font-weight:700;}.summary-total strong{font:700 1.55rem var(--display);letter-spacing:-.05em;}.summary-note{font-size:.68rem;color:#c7caf5;line-height:1.5;margin:0 0 14px;}.checkout-submit{width:100%;margin:0;border-radius:12px;}.secured{display:block;text-align:center;color:#c9ccf2;font:500 .62rem var(--mono);margin-top:12px;}
+  .checkout-success{padding:70px 25px;background:#fff;}.checkout-success p{color:#636791;}
+  .save-address{grid-column:1/-1;justify-self:start;border:0;border-radius:9px;background:linear-gradient(110deg,#1459e9,#8b16e8);color:#fff;padding:10px 13px;font-size:.75rem;font-weight:700;cursor:pointer;margin-top:3px;}.coupon-message{display:none;margin:-8px 0 12px;color:#9de8bb;font-size:.68rem;font-weight:700;}.coupon-message.show{display:block;}.coupon-discount[hidden]{display:none!important;}.coupon-discount strong{color:#9df0b8;}.dark .save-address{box-shadow:0 6px 14px #0004;}
+  .dark .checkout-card{background:#0d1034;border-color:#343870;}.dark .checkout-box{background:#151844;border-color:#343870;}.dark .checkout-box h3,.dark .checkout-product h4{color:#f2f3ff;}.dark .checkout-address{background:linear-gradient(90deg,#192055,#151844);}.dark .checkout-product-art{background:linear-gradient(135deg,#28316f,#4a2676);}.dark .payment-choice{background:#151844;border-color:#343870;color:#f2f3ff;}.dark .payment-choice.active{background:#21154c;border-color:#b063ff;}.dark .select-qty{background:#0d1034;color:#f2f3ff;border-color:#454a83;}
+  @media(max-width:800px){.checkout-form{padding:18px;}.checkout-top{padding:23px 22px;}.checkout-grid{grid-template-columns:1fr;}.order-summary{position:static;order:-1;}.checkout-product{grid-template-columns:65px 1fr;}.checkout-product-art{width:65px;height:76px;}.checkout-product-price{grid-column:2;text-align:left;}.delivery-strip{align-items:flex-start;}.checkout-card{max-height:96dvh;overflow:auto;}}
+  .delivery-strip{background:linear-gradient(100deg,#e7f9ea,#f5fff7);border-color:#c7ecd2;display:grid;grid-template-columns:auto 1fr;}.delivery-strip strong{grid-row:1/3;}.delivery-strip b{display:block;color:#11763a;font-size:.85rem;}.delivery-strip small{display:block;margin-top:2px;}.couriers{font-size:.69rem;color:#66749a;margin-top:8px;}.couriers span{display:inline-block;margin-right:9px;font-weight:700;color:#2f3e66;}
+  .payment-options{gap:8px;}.payment-choice{min-height:58px;}.payment-choice input{width:16px;height:16px;flex:0 0 auto;}.payment-logo.apple{background:#101010;font-size:.76rem;}.payment-logo.modo{background:#fff;border:1px solid #74d4b8;color:#00a77c;}.card-brands{display:flex;gap:4px;margin-top:5px;}.card-brand{height:17px;min-width:25px;border:1px solid #d9dbea;background:#fff;border-radius:3px;display:grid;place-items:center;font-size:.45rem;font-weight:800;color:#1a4baf;}.card-brand.mc{background:linear-gradient(90deg,#e7222a 0 48%,#ffb000 52%);font-size:0;}.card-brand.amex{background:#168bc1;color:#fff;}.card-brand.discover{color:#f27620;}.card-panel,.qr-panel{display:none;border:1px solid #dedff0;border-radius:13px;padding:16px;background:linear-gradient(140deg,#fafbff,#f7f1ff);margin-top:2px;}.card-panel.show,.qr-panel.show{display:block;}.card-panel h4{font-family:var(--display);color:#101458;margin:0 0 4px;font-size:.92rem;}.card-panel p{font-size:.72rem;color:#60709b;margin:0 0 12px;}.secure-card-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;}.secure-card-form label{display:grid;gap:5px;font-size:.7rem;font-weight:700;color:#303567;}.secure-card-form .wide{grid-column:1/-1;}.secure-card-form input,.secure-card-form select{padding:10px;border:1px solid #d7daf0;border-radius:8px;background:#fff;color:#101458;}.secure-card-form input:focus,.secure-card-form select:focus{outline:2px solid #8b16e836;border-color:#8b16e8;}.security-line{font-size:.68rem!important;color:#187240!important;margin:12px 0 0!important;font-weight:600;}.qr-panel{grid-template-columns:116px 1fr;gap:16px;align-items:center;background:linear-gradient(135deg,#eaf6ff,#f4ebff);}.qr-panel.show{display:grid;}.qr-panel img{width:116px;height:116px;object-fit:cover;background:#fff;border-radius:8px;padding:5px;}.qr-panel h4{font-family:var(--display);font-size:.95rem;color:#101458;margin:0 0 5px;}.qr-panel p{color:#626895;font-size:.72rem;margin:0;}.qr-panel small{font:500 .59rem var(--mono);color:#7b2bde;display:block;margin-top:7px;}.dark .card-panel,.dark .qr-panel{background:linear-gradient(135deg,#161a4b,#2c185a);border-color:#3c4077;}.dark .card-panel h4,.dark .qr-panel h4,.dark .secure-card-form label{color:#f2f3ff;}.dark .secure-card-form input,.dark .secure-card-form select{background:#0d1034;border-color:#444983;color:#fff;}.dark .card-brand{background:#1f255c;border-color:#48508d;}.dark .card-brand.amex{background:#168bc1;}.dark .card-brand.mc{background:linear-gradient(90deg,#e7222a 0 48%,#ffb000 52%);}
+  @media(max-width:520px){.qr-panel.show{grid-template-columns:1fr;justify-items:center;text-align:center;}.secure-card-form{grid-template-columns:1fr;}.secure-card-form .wide{grid-column:auto;}}
+  /* ---------- DARK DEFAULT + HERO ENHANCEMENTS ---------- */
+  body.dark{background:radial-gradient(circle at 85% 0%,rgba(117,28,220,.18),transparent 29%),linear-gradient(180deg,#090b2b 0%,#111541 52%,#0b0e31 100%);}
+  body.dark::before{opacity:.72;}.dark .hero::before{content:'';position:absolute;width:280px;height:280px;left:-170px;bottom:20px;border-radius:50%;background:radial-gradient(circle,rgba(20,89,233,.23),transparent 68%);pointer-events:none;}
+  .hero-copy{position:relative;z-index:1;}.hero-note{display:flex;gap:10px;align-items:flex-start;max-width:510px;margin-top:18px;padding:12px 14px;border-radius:13px;background:rgba(92,147,255,.09);border:1px solid rgba(168,181,255,.18);font-size:.82rem;color:var(--ink-soft);}.hero-note strong{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#1459e9,#8b16e8);color:#fff;font-size:.72rem;flex:0 0 auto;}
+  .dark .hero-visual::after{content:'SEÑAL INTELIGENTE';position:absolute;left:50%;bottom:4px;transform:translateX(-50%);font:500 .57rem var(--mono);letter-spacing:.18em;color:#b4a1ff;white-space:nowrap;}
+  .bottle-card{overflow:hidden;}.bottle-card svg{position:relative;z-index:1;animation:bottleFloat 4.6s ease-in-out infinite;filter:drop-shadow(0 13px 10px rgba(16,20,88,.18));}.bottle-card svg path:nth-of-type(2){transform-origin:center bottom;animation:waterBreathe 3.6s ease-in-out infinite;}.bottle-card::before{content:'';position:absolute;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(139,22,232,.18),transparent 68%);top:58px;left:50%;transform:translateX(-50%);animation:haloGlow 3.2s ease-in-out infinite;}.reminder-tag{z-index:3;box-shadow:0 6px 16px rgba(16,20,88,.28);}.countdown{position:relative;z-index:2;}.countdown b{letter-spacing:.08em;}.hero-trust div{transition:transform .25s ease;}.hero-trust div:hover{transform:translateY(-3px);}.dark .hero-trust{border-top-color:rgba(218,222,255,.2);}.dark .hero-trust div{border-right-color:rgba(218,222,255,.16);}
+  .details::before{content:'REMBOTTLE / CUIDADO DIARIO';display:block;font:500 .63rem var(--mono);letter-spacing:.14em;color:#a48bff;margin-bottom:15px;}.dark .detail-main,.dark .detail-specs{box-shadow:0 20px 48px rgba(0,0,0,.15);}.dark .feature-card{box-shadow:0 14px 32px rgba(0,0,0,.15);}.dark .feature-card:hover{box-shadow:0 20px 40px rgba(63,30,145,.25);}
+  @keyframes bottleFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-8px) rotate(1.2deg)}}@keyframes waterBreathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.93)}}@keyframes haloGlow{0%,100%{transform:translateX(-50%) scale(.9);opacity:.4}50%{transform:translateX(-50%) scale(1.2);opacity:1}}
+  @media(prefers-reduced-motion:reduce){.bottle-card svg,.bottle-card svg path:nth-of-type(2),.bottle-card::before{animation:none!important}}
+  /* ---------- PRODUCT DENSITY EXTENSION ---------- */
+  .hero{overflow:visible}.hero-visual{overflow:visible}.hero-bottle-svg{width:190px;height:310px}.hero-chip{position:absolute;z-index:5;display:flex;align-items:center;gap:8px;min-width:150px;padding:9px 11px;border:1px solid rgba(255,255,255,.5);border-radius:13px;background:rgba(255,255,255,.9);box-shadow:0 13px 28px rgba(16,20,88,.18);font-size:1rem;animation:chipFloat 4s ease-in-out infinite}.hero-chip b,.hero-chip small{display:block;font-size:.68rem;color:#101458;white-space:nowrap}.hero-chip small{font:500 .58rem var(--mono);color:#676b98;margin-top:2px}.chip-water{left:-18px;top:70px}.chip-pill{right:-32px;top:180px;animation-delay:1.3s}.chip-alert{left:-5px;bottom:44px;animation-delay:2.1s}.dark .hero-chip{background:rgba(22,26,73,.94);border-color:rgba(177,156,255,.33)}.dark .hero-chip b{color:#f3f4ff}.dark .hero-chip small{color:#babde1}.dark .bottle-card{background:linear-gradient(155deg,#f9faff,#e4eaff)}@keyframes chipFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  .problem-section{display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center;padding:92px 32px;background:linear-gradient(125deg,#edf1ff,#faf5ff);border-radius:30px;margin-top:40px;margin-bottom:20px}.problem-copy h2,.story-copy h2,.privacy-head h2,.waitlist-grid h2{font:700 clamp(1.8rem,3.3vw,3rem)/1.05 var(--display);letter-spacing:-.04em;color:#101458;margin:0}.problem-copy p,.story-copy p,.privacy-head p,.waitlist-grid p{color:#5d638e;max-width:650px;margin:16px 0 0}.data-placeholder{padding:25px;border-radius:20px;background:#101458;color:#fff;box-shadow:0 20px 40px rgba(16,20,88,.18)}.data-placeholder span{font:500 .62rem var(--mono);letter-spacing:.1em;color:#cdb8ff}.data-placeholder strong{display:block;font:700 1.15rem var(--display);margin:14px 0 8px}.data-placeholder p{color:#d7d9ff;font-size:.82rem;margin:0}.dark .problem-section{background:linear-gradient(125deg,#151943,#26174f)}.dark .problem-copy h2,.dark .story-copy h2,.dark .privacy-head h2,.dark .waitlist-grid h2{color:#f3f4ff}.dark .problem-copy p,.dark .story-copy p,.dark .privacy-head p,.dark .waitlist-grid p{color:#c0c4e5}
+  .features .section-head{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:end;max-width:840px}.features .section-head::after{content:'6 FUNCIONES\AUNA SOLA RUTINA';white-space:pre;font:500 .62rem/1.6 var(--mono);letter-spacing:.12em;color:#7a16d3;border-left:1px solid var(--line);padding-left:18px}.feature-grid{grid-template-columns:repeat(3,1fr)}.feature-icon{color:#1459e9}.feature-icon svg *{stroke:currentColor!important}.feature-symbol{font:700 1.25rem var(--display)}.audience{padding:92px 0}.audience-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.audience-grid article{border:1px solid var(--line);border-radius:19px;padding:24px;background:#fff;min-height:195px}.audience-grid article span{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#e7edff,#eddfff);font-size:1.25rem}.audience-grid h3{font:700 1.02rem var(--display);color:#101458;margin:18px 0 8px}.audience-grid p{font-size:.82rem;color:#5d638e;margin:0}.dark .audience-grid article{background:#151844;border-color:var(--line)}.dark .audience-grid h3{color:#f3f4ff}.dark .audience-grid p{color:#bec2e5}
+  .how-layout{display:grid;grid-template-columns:1fr .72fr;gap:65px;align-items:center}.how .section-head{max-width:580px}.app-showcase{min-height:510px;position:relative;display:grid;place-items:center}.app-showcase>p{position:absolute;bottom:0;font:500 .58rem var(--mono);letter-spacing:.08em;color:#7a16d3}.app-glow{position:absolute;width:310px;height:310px;border-radius:50%;background:radial-gradient(circle,#bfa2ff 0,rgba(191,162,255,.12) 45%,transparent 70%);animation:appGlow 4s ease-in-out infinite}.phone-frame{width:255px;height:495px;padding:11px;border:8px solid #101458;border-radius:37px;background:#101458;box-shadow:0 27px 52px rgba(16,20,88,.3);z-index:1}.phone-speaker{width:76px;height:17px;border-radius:0 0 12px 12px;background:#101458;position:absolute;z-index:2;left:50%;transform:translateX(-50%)}.app-screen{height:100%;border-radius:25px;background:linear-gradient(165deg,#f6f4ff,#e1edff);padding:27px 15px 13px;overflow:hidden;color:#101458}.app-top{display:flex;justify-content:space-between;align-items:center;font-size:.73rem;font-weight:700}.app-top i{font-style:normal;color:#8b16e8}.app-ring{width:136px;height:136px;margin:20px auto;position:relative;display:grid;place-items:center}.app-ring svg{position:absolute;width:100%;height:100%;transform:rotate(-90deg)}.app-ring circle{fill:none;stroke:#d6d9f5;stroke-width:10}.app-ring .ring-progress{stroke:#1459e9;stroke-linecap:round;stroke-dasharray:216 295;animation:ringDraw 3s ease-in-out infinite}.app-ring div{text-align:center}.app-ring b,.app-ring small{display:block}.app-ring b{font:700 1.48rem var(--display)}.app-ring small{font-size:.62rem;color:#676b98}.app-card{background:#fff;border-radius:12px;padding:11px;box-shadow:0 6px 14px rgba(16,20,88,.08);font-size:.65rem}.app-card b{font-size:.69rem}.app-card p{margin:7px 0 0;color:#5f6491}.app-check,.app-pending{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;background:#3bc579;color:#fff;font-size:.55rem}.app-pending{background:#8b16e8}.app-notice{margin-top:10px;padding:9px;border-radius:10px;background:#101458;color:#fff;font-size:.62rem}.app-notice b{color:#cdb8ff}.dark .phone-frame{border-color:#f1f2ff;background:#f1f2ff}.dark .phone-speaker{background:#f1f2ff}@keyframes appGlow{50%{transform:scale(1.12);opacity:.75}}@keyframes ringDraw{50%{stroke-dasharray:250 295}}
+  .buy-panel{grid-template-columns:1fr .82fr 1fr}.buy-product-zone{position:relative;z-index:1;min-height:330px;display:grid;place-items:center;text-align:center}.buy-product-zone p{position:absolute;bottom:0;margin:0;color:#dbcfff;font:500 .68rem var(--mono);letter-spacing:.06em}.buy-bottle{width:126px;height:238px;border:6px solid #f4f5ff;border-radius:34px 34px 39px 39px;position:relative;background:linear-gradient(135deg,#a9cbff,#e6f1ff 48%,#5b97f1);box-shadow:0 18px 32px rgba(0,0,0,.25);transition:background .35s ease,transform .35s ease}.buy-bottle.violet{background:linear-gradient(135deg,#d8b4ff,#f7eefe 48%,#a46edc)}.buy-bottle i{position:absolute;width:58px;height:31px;left:28px;top:-34px;border-radius:8px 8px 3px 3px;background:#1459e9;border:5px solid #f4f5ff}.buy-bottle.violet i{background:#8b16e8}.buy-water{position:absolute;left:0;right:0;bottom:0;height:45%;border-radius:0 0 33px 33px;background:rgba(47,132,240,.7);animation:waterBreathe 3.6s ease-in-out infinite}.buy-bottle.violet .buy-water{background:rgba(132,58,201,.58)}.buy-bottle>b{position:absolute;top:90px;left:48px;color:#8b16e8;font-size:1.55rem;z-index:2}.buy-bottle small{position:absolute;bottom:12px;left:40px;color:#fff;font:500 .62rem var(--mono);letter-spacing:.15em;z-index:2}.buy-base{position:absolute;bottom:-32px;left:-12px;width:138px;height:31px;background:#f5f2ff;border-radius:7px 7px 15px 15px;display:flex;justify-content:space-around;padding:7px}.buy-base em{width:38px;border-radius:4px;background:#e2d1ff}.colorway.unavailable{opacity:.5;cursor:not-allowed}.presale-note{font-size:.72rem!important;color:#d9caff!important;margin:12px 0 0!important}.presale-note b{color:#fff}
+  .story-section{display:grid;grid-template-columns:.72fr 1.28fr;gap:70px;align-items:center;padding:105px 0}.story-visual{min-height:300px;border-radius:28px;background:linear-gradient(145deg,#1459e9,#6a18c9);display:grid;place-items:center;position:relative;overflow:hidden}.story-visual::before,.story-visual::after{content:'';position:absolute;border:1px solid rgba(255,255,255,.4);border-radius:50%;width:280px;height:280px}.story-visual::after{width:190px;height:190px}.story-mark{width:94px;height:94px;border-radius:28px;background:#fff;color:#7a16d3;display:grid;place-items:center;font:700 3.4rem var(--display);z-index:1}.story-visual span{position:absolute;bottom:20px;font:500 .62rem var(--mono);letter-spacing:.12em;color:#fff}.team-placeholder{display:inline-block;margin-top:22px;padding:10px 12px;border:1px dashed #8b16e8;border-radius:9px;color:#6a18b6;font:500 .72rem var(--mono)}.project-status{background:var(--bg-alt);padding:95px 0}.timeline-project{display:grid;grid-template-columns:repeat(5,1fr);position:relative;gap:12px}.timeline-project::before{content:'';position:absolute;top:21px;left:6%;right:6%;height:2px;background:var(--line)}.timeline-project div{position:relative;z-index:1;text-align:center}.timeline-project span{width:44px;height:44px;border-radius:50%;background:#fff;border:2px solid var(--line);display:grid;place-items:center;margin:auto;color:#6a18b6;font:500 .7rem var(--mono)}.timeline-project .current span{background:#8b16e8;border-color:#8b16e8;color:#fff;box-shadow:0 0 0 7px rgba(139,22,232,.13)}.timeline-project b,.timeline-project small{display:block}.timeline-project b{margin-top:10px;font-size:.8rem}.timeline-project small{color:var(--ink-soft);font-size:.66rem;margin-top:3px}.dark .timeline-project span{background:#151844}.dark .timeline-project .current span{background:#8b16e8}.privacy-section{padding:105px 0}.privacy-head{max-width:620px}.privacy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:38px}.privacy-grid article{background:linear-gradient(145deg,#eef1ff,#fff);border:1px solid var(--line);padding:26px;border-radius:19px}.privacy-grid span{color:#8b16e8;font-size:1.5rem}.privacy-grid h3{font:700 1.02rem var(--display);color:#101458;margin:15px 0 7px}.privacy-grid p{color:#5d638e;font-size:.82rem;margin:0}.dark .privacy-grid article{background:linear-gradient(145deg,#151844,#1b1650)}.dark .privacy-grid h3{color:#f3f4ff}.dark .privacy-grid p{color:#c0c4e5}.faq-section{padding:92px 0}.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 26px}.faq-grid details{border-top:1px solid var(--line);padding:17px 0}.faq-grid details:nth-last-child(-n+2){border-bottom:1px solid var(--line)}.faq-grid summary{cursor:pointer;list-style:none;font:700 .9rem var(--display);color:var(--teal-deep);display:flex;justify-content:space-between;gap:10px}.faq-grid summary::after{content:'+';color:#8b16e8;font-size:1.1rem}.faq-grid details[open] summary::after{content:'−'}.faq-grid p{margin:10px 0 0;color:var(--ink-soft);font-size:.8rem}.waitlist-section{padding:76px 0;background:linear-gradient(110deg,#101458,#48168d 62%,#8b16e8);color:#fff}.waitlist-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:45px;align-items:center}.waitlist-grid h2{color:#fff}.waitlist-grid p{color:#e1dbff}.waitlist-form{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);padding:18px;border-radius:17px}.waitlist-form label{display:block;font-size:.74rem;font-weight:700;margin-bottom:8px}.waitlist-form>div{display:flex;gap:8px}.waitlist-form input{flex:1;min-width:0;border:0;border-radius:9px;padding:12px;color:#101458}.waitlist-form button{border:0;border-radius:9px;padding:0 14px;background:#fff;color:#4d168f;font-weight:800;cursor:pointer}.waitlist-form p{min-height:20px;margin:10px 0 0;color:#c8ffdd;font-size:.75rem}
+  @media(max-width:1000px){.buy-panel{grid-template-columns:1fr 1fr}.buy-product-zone{grid-column:2;grid-row:1/3}.how-layout{grid-template-columns:1fr;gap:18px}.app-showcase{min-height:460px}.audience-grid{grid-template-columns:repeat(2,1fr)}.story-section,.specs-layout{gap:38px}.problem-section{margin-left:20px;margin-right:20px}.hero-chip{transform:scale(.9)}.chip-water{left:-2px}.chip-pill{right:-3px}}
+  @media(max-width:700px){.hero-chip{display:none}.problem-section{grid-template-columns:1fr;margin:30px 0;padding:55px 20px;border-radius:0}.features .section-head{grid-template-columns:1fr}.features .section-head::after{display:none}.feature-grid,.privacy-grid{grid-template-columns:1fr}.audience-grid{grid-template-columns:1fr 1fr}.buy-panel{grid-template-columns:1fr}.buy-product-zone{grid-column:auto;grid-row:auto;min-height:260px}.buy-bottle{transform:scale(.85)}.story-section,.waitlist-grid{grid-template-columns:1fr;gap:28px}.timeline-project{grid-template-columns:1fr;gap:18px}.timeline-project::before{top:0;bottom:0;left:21px;right:auto;width:2px;height:auto}.timeline-project div{display:grid;grid-template-columns:55px 1fr;text-align:left;align-items:center}.timeline-project span{margin:0}.timeline-project b{margin:0}.timeline-project small{grid-column:2}.faq-grid{grid-template-columns:1fr}.faq-grid details:nth-last-child(-n+2){border-bottom:0}.faq-grid details:last-child{border-bottom:1px solid var(--line)}.waitlist-form>div{flex-direction:column}.waitlist-form button{padding:12px}.how{padding-left:20px!important;padding-right:20px!important}}
+  @media(prefers-reduced-motion:reduce){.hero-chip,.app-glow,.app-ring .ring-progress,.buy-water{animation:none!important}}
+</style>
+</head>
+<body class="dark">
+
+<header>
+  <nav class="wrap">
+    <div class="brand-lockup">
+      <div class="logo"><span class="logo-dot"></span>RemBottle</div>
+      <span class="brand-tagline">Te avisa · Te cuida · Te acompaña</span>
+    </div>
+    <div class="nav-links">
+      <a href="#producto">Producto</a>
+      <a href="#caracteristicas">Características</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#comprar">Comprar</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Cambiar a modo claro">Modo claro</button>
+      <button class="cart-toggle" id="cartToggle" aria-label="Abrir carrito"><span class="cart-label">Carrito</span> <span class="cart-count" id="cartCount">0</span></button>
+      <button class="nav-cta" onclick="document.getElementById('comprar').scrollIntoView({behavior:'smooth'})">Comprar ahora</button>
+    </div>
+  </nav>
+</header>
+
+<section class="hero wrap" id="producto">
+  <div>
+    <div class="eyebrow">Botella inteligente</div>
+    <h1>Te recuerda tomar agua.<br>Y tus pastillas.</h1>
+    <p class="lead">RemBottle combina recordatorios de hidratación conectados a tu celular con una base para llevar tu medicación diaria. Una sola botella para ordenar pequeños cuidados sin sumar más alarmas a tu rutina.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.getElementById('comprar').scrollIntoView({behavior:'smooth'})">Comprar RemBottle</button>
+      <button class="btn-ghost" onclick="document.getElementById('como-funciona').scrollIntoView({behavior:'smooth'})">Ver cómo funciona</button>
+    </div>
+    <div class="hero-note"><strong>✦</strong><span>Configurás horarios, elegís el tipo de aviso y consultás tu progreso semanal desde la app. Todo se adapta a tu día, no al revés.</span></div>
+    <div class="hero-trust">
+      <div><span>App</span> incluida</div>
+      <div><span>2 espacios</span> sellados en la base</div>
+      <div><span>7 días</span> de batería estimada</div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="pulse-ring r1"></div>
+    <div class="pulse-ring r2"></div>
+    <div class="pulse-ring r3"></div>
+    <div class="hero-chip chip-water">💧 <span><b>1,2 L hoy</b><small>Meta diaria en progreso</small></span></div>
+    <div class="hero-chip chip-pill">💊 <span><b>Toma de las 14:00 ✓</b><small>Recordatorio completado</small></span></div>
+    <div class="hero-chip chip-alert">🔔 <span><b>Próximo aviso</b><small id="chipClock">02:14:08</small></span></div>
+    <div class="bottle-card">
+      <div class="reminder-tag"><span class="live-dot"></span>ACTIVO</div>
+      <svg class="hero-bottle-svg" width="190" height="310" viewBox="0 0 190 310" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Ilustración de RemBottle con dos compartimentos abiertos">
+        <defs><linearGradient id="heroGlass" x1="37" y1="49" x2="151" y2="245" gradientUnits="userSpaceOnUse"><stop stop-color="#F4F7FF"/><stop offset="1" stop-color="#C7D8FF"/></linearGradient><linearGradient id="heroWater" x1="95" y1="149" x2="95" y2="246" gradientUnits="userSpaceOnUse"><stop stop-color="#78B5FF"/><stop offset="1" stop-color="#3E86EF"/></linearGradient></defs>
+        <path d="M62 16h66v25H62z" fill="#101458"/><rect x="56" y="27" width="78" height="28" rx="10" fill="#1459E9"/><rect x="65" y="8" width="60" height="16" rx="6" fill="#8B16E8"/>
+        <path d="M43 73c0-14 12-24 27-24h50c15 0 27 10 27 24l8 157c1 27-20 48-48 48H83c-28 0-49-21-48-48L43 73Z" fill="url(#heroGlass)" stroke="#101458" stroke-width="4"/>
+        <path d="M39 165h112l4 64c1 24-18 43-43 43H78c-25 0-44-19-43-43l4-64Z" fill="url(#heroWater)"/>
+        <rect x="63" y="87" width="64" height="29" rx="9" fill="#8B16E8"/><circle cx="95" cy="101" r="7" fill="#fff"/><path d="M95 129c8 11 13 17 13 23a13 13 0 1 1-26 0c0-6 5-12 13-23Z" fill="#1459E9"/>
+        <path d="M54 277h82l7 11H47l7-11Z" fill="#101458"/><rect x="46" y="287" width="98" height="18" rx="8" fill="#16205A"/>
+        <g class="pill-lid"><path d="M20 248h40l-8 34H28l-8-34Z" fill="#E8DEFF" stroke="#8B16E8" stroke-width="3"/><path d="M17 246h46" stroke="#8B16E8" stroke-width="5" stroke-linecap="round"/><rect x="29" y="259" width="22" height="9" rx="4.5" fill="#8B16E8"/></g>
+        <g class="pill-lid"><path d="M130 248h40l-8 34h-24l-8-34Z" fill="#E8DEFF" stroke="#8B16E8" stroke-width="3"/><path d="M127 246h46" stroke="#8B16E8" stroke-width="5" stroke-linecap="round"/><rect x="139" y="259" width="22" height="9" rx="4.5" fill="#1459E9"/></g>
+      </svg>
+      <div class="countdown">Próximo recordatorio en<br><b id="clock">02:14:08</b></div>
+    </div>
+  </div>
+</section>
+
+<section class="details wrap" aria-labelledby="detalles-title">
+  <div class="details-grid">
+    <div class="detail-main">
+      <div class="eyebrow">Pensada para acompañarte</div>
+      <h2>Una rutina más simple, sin dejar nada librado a la memoria.</h2>
+      <p>RemBottle reúne hidratación y medicación en un mismo lugar. Configurás horarios desde la app, recibís avisos suaves y consultás el progreso del día cuando lo necesitás.</p>
+      <div class="pill-list">
+        <span class="pill">Avisos por vibración</span><span class="pill">Notificaciones en el celular</span><span class="pill">Base con medicación</span><span class="pill">Historial semanal</span>
+      </div>
+    </div>
+    <div class="detail-specs">
+      <h3>Detalles de la botella</h3>
+      <div class="spec"><span>Capacidad</span><span>600 ml</span></div>
+      <div class="spec"><span>Autonomía</span><span>Hasta 7 días</span></div>
+      <div class="spec"><span>Conexión</span><span>Bluetooth con app</span></div>
+      <div class="spec"><span>Material</span><span>Libre de BPA</span></div>
+      <div class="spec"><span>Compartimentos</span><span>2 espacios sellados</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="problem-section wrap" id="problema">
+  <div class="problem-copy"><div class="eyebrow">EL PROBLEMA</div><h2>Cuidarte no debería depender de que te acuerdes en el momento justo.</h2><p>Cuando el día se llena de clases, trabajo, viajes y pendientes, la hidratación y las tomas pueden quedar en segundo plano. RemBottle busca concentrar esas señales en un objeto cotidiano.</p></div>
+  <aside class="data-placeholder"><span>DATOS PARA VALIDAR</span><strong>[DATO Y FUENTE: completar]</strong><p>Incorporar aquí una cifra verificada sobre adherencia a tratamientos crónicos o hábitos de hidratación, con enlace a la fuente original.</p></aside>
+</section>
+
+<section class="features wrap" id="caracteristicas">
+  <div class="section-head">
+    <div class="eyebrow">Qué la hace inteligente</div>
+    <h2>Tres funciones, un solo objeto en tu mochila</h2>
+    <p>Nada de cargar la botella de agua, la pastillera y el celular con alarmas por separado.</p>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 5 11 5 15.5C5 19.6 8.13 22 12 22C15.87 22 19 19.6 19 15.5C19 11 12 2 12 2Z" stroke="currentColor" stroke-width="1.8"/></svg>
+      </div>
+      <h3>Recordatorios de hidratación</h3>
+      <p>Vibra y envía un aviso al celular cuando pasó mucho tiempo sin tomar agua. Podés ajustar frecuencia y horario desde la app.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="8" width="16" height="11" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M8 8V6a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.8"/></svg>
+      </div>
+      <h3>Compartimento para pastillas</h3>
+      <p>Dos espacios sellados en la base para llevar las tomas del día sin cargar otra pastillera ni perderlas en la mochila.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M9 18h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <h3>Conectada a la app</h3>
+      <p>Sincroniza tu rutina, guarda un historial semanal y permite cambiar recordatorios sin depender de múltiples alarmas.</p>
+    </div>
+    <div class="feature-card"><div class="feature-icon feature-symbol">⌁</div><h3>Hasta 7 días de batería</h3><p>Autonomía estimada para acompañarte durante la semana y reducir la necesidad de cargarla todos los días.</p></div>
+    <div class="feature-card"><div class="feature-icon feature-symbol">◒</div><h3>Material libre de BPA</h3><p>Elegimos un material pensado para el uso cotidiano. Los detalles finales del producto se validarán en prototipo.</p></div>
+    <div class="feature-card"><div class="feature-icon feature-symbol">↗</div><h3>Historial semanal</h3><p>La app organiza el registro de hidratación y recordatorios para que puedas revisar tu rutina con más claridad.</p></div>
+  </div>
+</section>
+
+<section class="audience wrap" id="para-quien"><div class="section-head"><div class="eyebrow">PENSADA PARA</div><h2>Rutinas distintas, una ayuda simple.</h2><p>RemBottle no reemplaza ningún tratamiento: acompaña la organización cotidiana de personas y familias.</p></div><div class="audience-grid"><article><span>💊</span><h3>Tratamientos diarios</h3><p>Para quienes quieren tener sus recordatorios de hidratación y medicación más cerca.</p></article><article><span>♡</span><h3>Adultos mayores y familias</h3><p>Una señal visual y suave para acompañar rutinas con más tranquilidad.</p></article><article><span>▣</span><h3>Estudiantes y trabajadores</h3><p>Para días intensos en los que las pausas de autocuidado suelen postergarse.</p></article><article><span>⚡</span><h3>Personas activas</h3><p>Para integrar la hidratación a entrenamientos, traslados y jornadas largas.</p></article></div></section>
+
+<section class="how wrap" id="como-funciona">
+  <div class="how-layout"><div><div class="section-head">
+    <div class="eyebrow">Cómo funciona</div>
+    <h2>Un día con RemBottle</h2>
+    <p>La botella y la app trabajan juntas para ordenar avisos que ya forman parte de tu día.</p>
+  </div>
+  <div class="how-flow">
+    <div class="how-step">
+      <div class="time">08:00</div>
+      <div>
+        <h4>Cargás tus pastillas</h4>
+        <p>Abrís el compartimento de la base y guardás las pastillas del día. La app te confirma qué compartimento corresponde a cada toma.</p>
+      </div>
+    </div>
+    <div class="how-step">
+      <div class="time">11:30</div>
+      <div>
+        <h4>Te recuerda tomar agua</h4>
+        <p>Si pasó demasiado tiempo sin que bebas, la botella vibra suave y tu celular recibe una notificación.</p>
+      </div>
+    </div>
+    <div class="how-step">
+      <div class="time">14:00</div>
+      <div>
+        <h4>Avisa la toma de medicación</h4>
+        <p>Un aviso distinto te indica que es momento de abrir el compartimento correspondiente.</p>
+      </div>
+    </div>
+    <div class="how-step">
+      <div class="time">21:00</div>
+      <div>
+        <h4>Revisás tu resumen del día</h4>
+        <p>La app muestra cuánta agua tomaste y qué tomas de medicación completaste, para llevar el control sin anotar nada.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+  <aside class="app-showcase" aria-label="Mockup de la aplicación RemBottle">
+    <div class="app-glow"></div><div class="phone-frame"><div class="phone-speaker"></div><div class="app-screen"><div class="app-top"><span>Buenos días, Sofi</span><i>•••</i></div><div class="app-ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="47"/><circle class="ring-progress" cx="60" cy="60" r="47"/></svg><div><b>1,2 L</b><small>de 2 L hoy</small></div></div><div class="app-card"><b>Medicación de hoy</b><p><span class="app-check">✓</span> 08:00 · completada</p><p><span class="app-pending">•</span> 14:00 · recordatorio activo</p></div><div class="app-notice">🔔 Próximo aviso en <b id="appClock">02:14:08</b></div></div></div><p>Vista conceptual de la app · Bluetooth</p></aside>
+  </div>
+</section>
+
+<section class="buy wrap" id="comprar">
+  <div class="buy-panel">
+    <div class="buy-copy">
+      <div class="eyebrow">Comprar</div>
+      <h2>Llevate tu RemBottle</h2>
+      <p>Acceso anticipado a RemBottle. Reservá tu lugar para la próxima etapa del proyecto.</p>
+      <div class="price-row">
+        <div class="price">$79.990</div>
+        <div class="price-note">ARS · [PREVENTA / ACCESO ANTICIPADO: elegir]</div>
+      </div>
+      <div class="purchase-includes"><span>Botella inteligente</span><span>Cargador magnético</span><span>Acceso a la app</span><span>Guía de inicio rápido</span></div><p class="presale-note">Entrega estimada: <b>[FECHA: completar]</b>. Las condiciones finales de envío se informarán antes de confirmar la compra.</p>
+      <button class="btn-primary" id="addToCart">Agregar al carrito</button>
+      <p class="purchase-confirm" id="purchaseConfirm">✓ RemBottle se agregó a tu carrito.</p>
+    </div>
+    <div class="buy-product-zone"><div class="buy-bottle blue" id="buyBottle"><i></i><span class="buy-water"></span><b>♥</b><small>REM</small><div class="buy-base"><em></em><em></em></div></div><p id="buyVariantLabel">Azul RemBottle</p></div><div class="colorways">
+      <div class="colorway active">
+        <div class="swatch" style="background:#1459E9;"></div>
+        <div>
+          <div class="colorway-name">Azul RemBottle</div>
+          <div class="colorway-note">El original</div>
+        </div>
+      </div>
+      <div class="colorway unavailable" aria-disabled="true">
+        <div class="swatch" style="background:#8B16E8;"></div>
+        <div>
+          <div class="colorway-name">Violeta señal</div>
+          <div class="colorway-note">Edición limitada</div>
+        </div>
+      </div>
+      <div class="colorway">
+        <div class="swatch" style="background:#F5F6FF; border-color:#8B16E8;"></div>
+        <div>
+          <div class="colorway-name">Niebla</div>
+          <div class="colorway-note">Próximamente</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="story-section wrap" id="historia"><div class="story-visual"><div class="story-mark">R</div><span>UNA IDEA EN CONSTRUCCIÓN</span></div><div class="story-copy"><div class="eyebrow">NUESTRA HISTORIA</div><h2>RemBottle nace de una pregunta cotidiana: ¿cómo hacer que cuidarse sea un poco más fácil?</h2><p>Estamos construyendo una herramienta que una hidratación, recordatorios y una pastillera de uso diario en un formato simple de llevar. La idea es acompañar, no reemplazar, los cuidados indicados por profesionales.</p><div class="team-placeholder">[EQUIPO: completar] · Foto y nombres del equipo</div></div></section>
+
+<section class="project-status"><div class="wrap"><div class="section-head"><div class="eyebrow">ESTADO DEL PROYECTO</div><h2>Construyendo RemBottle paso a paso.</h2><p>La etapa actual y el calendario se comunicarán de forma transparente a quienes se sumen.</p></div><div class="timeline-project"><div><span>01</span><b>Idea</b><small>Definición del problema</small></div><div><span>02</span><b>Prototipo</b><small>Diseño y validación</small></div><div class="current"><span>03</span><b>Pruebas</b><small>[ETAPA ACTUAL: completar]</small></div><div><span>04</span><b>Preventa</b><small>Próxima etapa</small></div><div><span>05</span><b>Lanzamiento</b><small>Por definir</small></div></div></div></section>
+
+<section class="privacy-section wrap" id="privacidad"><div class="privacy-head"><div class="eyebrow">PRIVACIDAD Y SEGURIDAD</div><h2>Información clara sobre tus datos.</h2><p>La app está pensada para guardar sólo lo necesario para acompañar tu rutina.</p></div><div class="privacy-grid"><article><span>◌</span><h3>Datos de rutina</h3><p>La app puede registrar tus recordatorios configurados y el historial que elijas consultar.</p></article><article><span>↗</span><h3>Sin compartir por defecto</h3><p>No se comparten datos personales con terceros sin una política clara y tu autorización.</p></article><article><span>✦</span><h3>Acompaña, no reemplaza</h3><p>RemBottle no reemplaza el consejo, diagnóstico ni tratamiento de un profesional de salud.</p></article></div></section>
+
+<section class="faq-section wrap" id="faq"><div class="section-head"><div class="eyebrow">PREGUNTAS FRECUENTES</div><h2>Antes de sumarte, queremos ser claros.</h2></div><div class="faq-grid"><details><summary>¿Cómo se carga RemBottle?</summary><p>Incluirá un cargador magnético. El detalle final del sistema de carga se confirmará con el prototipo.</p></details><details><summary>¿Cuánto dura la batería?</summary><p>La autonomía estimada es de hasta 7 días, según uso y configuración de avisos.</p></details><details><summary>¿Va a funcionar con iPhone y Android?</summary><p>La compatibilidad se está definiendo para la etapa de lanzamiento. [COMPATIBILIDAD: completar]</p></details><details><summary>¿Es lavable?</summary><p>Estamos definiendo los componentes lavables y las indicaciones finales de cuidado. [CUIDADO DEL PRODUCTO: completar]</p></details><details><summary>¿Qué datos guarda la app?</summary><p>La idea es guardar los recordatorios y el historial que configurás. La política de privacidad final se publicará antes del lanzamiento.</p></details><details><summary>¿Qué pasa si se descarga?</summary><p>El comportamiento ante batería baja se está validando en prototipo. [COMPORTAMIENTO SIN BATERÍA: completar]</p></details><details><summary>¿Cuándo sale?</summary><p>La fecha de lanzamiento todavía está en definición. Las novedades se compartirán con la lista de espera.</p></details><details><summary>¿Qué garantía tendrá?</summary><p>Las condiciones de garantía se informarán antes de habilitar la preventa. [GARANTÍA: completar]</p></details></div></section>
+
+<section class="waitlist-section" id="lista-espera"><div class="wrap waitlist-grid"><div><div class="eyebrow">LISTA DE ESPERA</div><h2>Enterate primero de las próximas novedades.</h2><p>Dejanos tu email y te avisaremos cuando haya información nueva sobre pruebas, preventa o lanzamiento.</p></div><form class="waitlist-form" id="waitlistForm"><label for="waitlistEmail">Correo electrónico</label><div><input id="waitlistEmail" type="email" required placeholder="nombre@correo.com"><button type="submit">Quiero sumarme →</button></div><p id="waitlistMessage" aria-live="polite"></p><!-- TODO: conectar este formulario a tu servicio de email o backend antes de producción. --></form></div></section>
+
+<footer class="wrap">
+  <div class="footer-row">
+    <div class="logo"><span class="logo-dot"></span>RemBottle</div>
+    <div class="footer-links">
+      <a href="#producto">Producto</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#comprar">Comprar</a>
+    </div>
+  </div>
+  <div class="footer-note">RemBottle no reemplaza el consejo de un profesional de la salud sobre tu medicación.</div>
+</footer>
+
+<aside class="cart-drawer" id="cartDrawer" aria-label="Carrito de compra" aria-hidden="true">
+  <div class="cart-head"><h2>Tu carrito</h2><button class="icon-close" id="closeCart" aria-label="Cerrar carrito">×</button></div>
+  <p class="cart-empty">Todavía no agregaste productos.</p>
+  <div class="cart-item" id="cartItem">
+    <div class="cart-thumb">💧</div>
+    <div class="cart-info"><h3>RemBottle</h3><p id="cartColor">Azul RemBottle</p><div class="cart-price" id="itemPrice">$79.990 ARS</div><div class="quantity"><span class="quantity-label">Cantidad</span><button class="qty-btn" id="qtyMinus" aria-label="Quitar una botella">−</button><span class="qty-value" id="qtyValue">1</span><button class="qty-btn" id="qtyPlus" aria-label="Agregar una botella">+</button></div></div>
+  </div>
+  <div class="cart-foot"><div class="cart-total"><span>Total</span><span id="cartTotal">$0 ARS</span></div><button class="btn-primary checkout" id="checkout" disabled>Compra preparada</button></div>
+</aside>
+
+<div class="checkout-modal" id="checkoutModal" aria-hidden="true">
+  <div class="checkout-card" id="checkoutCard" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+    <div class="checkout-top"><div><h2 id="checkoutTitle">Finalizar tu compra</h2><p>Revisá tu pedido, elegí tu medio de pago y completá los datos de envío.</p></div><button class="icon-close" id="closeCheckout" aria-label="Cerrar formulario">×</button></div>
+    <form class="checkout-form" id="checkoutForm">
+      <div class="checkout-grid">
+        <div class="checkout-main">
+          <section class="checkout-box"><div class="checkout-box-head"><h3>Dirección de envío</h3><button type="button" class="edit-button" id="editAddress">Editar datos</button></div><div class="checkout-address"><b id="addressName">Agregá una dirección de envío</b><small id="addressLine">Nombre, domicilio, ciudad y código postal</small></div><div class="checkout-form-fields" id="addressFields"><div class="field"><label for="name">Nombre</label><input id="name" required autocomplete="given-name" placeholder="Tu nombre"></div><div class="field"><label for="surname">Apellido</label><input id="surname" required autocomplete="family-name" placeholder="Tu apellido"></div><div class="field full"><label for="email">Correo electrónico</label><input id="email" type="email" required autocomplete="email" placeholder="nombre@correo.com"></div><div class="field"><label for="region">Región / provincia</label><select id="region" required><option value="" selected disabled>Seleccioná una opción</option><option>Buenos Aires</option><option>CABA</option><option>Córdoba</option><option>Santa Fe</option><option>Otra</option></select></div><div class="field"><label for="postal">Código postal</label><input id="postal" required autocomplete="postal-code" placeholder="Ej. 1000"></div><div class="field full"><label for="address">Domicilio</label><input id="address" required autocomplete="street-address" placeholder="Calle, número y departamento"></div><button type="button" class="save-address" id="saveAddress">Usar esta dirección de envío</button></div></section>
+          <div class="delivery-strip"><strong>✓</strong><div><b>Entrega de preventa</b><small>Fecha estimada: [FECHA: completar]</small><div class="couriers">El costo, zona de entrega y transportista se confirmarán cuando se defina la logística.</div></div></div>
+          <section class="checkout-box"><div class="checkout-box-head"><h3>Detalle del producto</h3><span class="checkout-qty-label">1 unidad</span></div><div class="checkout-product"><div class="checkout-product-art">💧</div><div><h4>RemBottle</h4><p id="checkoutVariant">Azul RemBottle · Botella inteligente</p><select class="select-qty" id="checkoutQty" aria-label="Cantidad de botellas"><option value="1">Cantidad: 1</option><option value="2">Cantidad: 2</option><option value="3">Cantidad: 3</option></select></div><div class="checkout-product-price" id="checkoutPrice">$79.990 <small>ARS</small></div></div></section>
+          <section class="checkout-box"><div class="checkout-box-head"><h3>Métodos de pago</h3><span>Elegí uno</span></div><div class="payment-options">
+            <label class="payment-choice" data-method="apple"><input type="radio" name="payment"><span class="payment-logo apple"> Pay</span><span><b>Apple Pay</b><small>Escaneá el código desde tu dispositivo.</small></span><i>✓</i></label>
+            <label class="payment-choice active" data-method="card"><input type="radio" name="payment" checked><span class="payment-logo visa">VISA</span><span><b>Tarjeta</b><small>Pago con tarjeta de crédito o débito.</small><span class="card-brands"><i class="card-brand">VISA</i><i class="card-brand mc"></i><i class="card-brand amex">AMEX</i><i class="card-brand discover">DISC</i></span></span><i>✓</i></label>
+            <div class="card-panel show" id="cardPanel"><h4>Datos de tarjeta</h4><p>La información se envía al proveedor de pago autorizado. RemBottle no la almacena.</p><div class="secure-card-form"><label class="wide">Número de tarjeta<input inputmode="numeric" autocomplete="cc-number" placeholder="0000 0000 0000 0000"></label><label>Vencimiento<select autocomplete="cc-exp"><option>Mes</option><option>01</option><option>02</option><option>03</option></select></label><label>Código de seguridad<input inputmode="numeric" autocomplete="cc-csc" placeholder="CVV"></label></div><p class="security-line">🔒 Transacción protegida por el proveedor de pago.</p></div>
+            <label class="payment-choice" data-method="mercadopago"><input type="radio" name="payment"><span class="payment-logo">MP</span><span><b>Mercado Pago</b><small>Pagá escaneando un código QR.</small></span><i>✓</i></label>
+            <label class="payment-choice" data-method="modo"><input type="radio" name="payment"><span class="payment-logo modo">MODO</span><span><b>MODO</b><small>Escaneá el QR con MODO o la app de tu banco.</small></span><i>✓</i></label>
+            <div class="qr-panel" id="qrPanel"><img src="qr-demo.png" alt="Código QR de demostración"><div><h4 id="qrTitle">Escaneá para continuar</h4><p id="qrText">Abrí la aplicación elegida y escaneá este código para completar el pago.</p><small>QR DE DEMOSTRACIÓN · SE REEMPLAZA AL INTEGRAR EL PROVEEDOR</small></div></div>
+          </div></section>
+        </div>
+        <aside class="order-summary"><h3>Resumen del pedido</h3><div class="coupon-row"><input id="couponCode" placeholder="Código de cupón"><button type="button" id="applyCoupon">Aplicar</button></div><p class="coupon-message" id="couponMessage" aria-live="polite">Ingresá un cupón para obtener $10.000 ARS de descuento.</p><div class="summary-row"><span>Producto</span><strong id="summaryProduct">$79.990 ARS</strong></div><div class="summary-row coupon-discount" id="couponDiscount" hidden><span>Descuento de cupón</span><strong>−$10.000 ARS</strong></div><div class="summary-row"><span>Envío</span><strong class="free">A calcular</strong></div><div class="summary-total"><span>Total</span><strong id="summaryTotal">$79.990</strong></div><p class="summary-note">El total final se confirma al configurar el método de pago y el envío.</p><button class="btn-primary checkout-submit" type="submit">Continuar con la compra →</button><span class="secured">🔒 Pago gestionado por el proveedor seleccionado</span></aside>
+      </div>
+    </form>
+    <div class="checkout-success"><div class="success-icon">✓</div><h2>¡Pedido preparado!</h2><p>El siguiente paso sería abrir el checkout seguro del medio de pago que elegiste.</p></div>
+  </div>
+</div>
+
+<script>
+  // Colorway selection
+  document.querySelectorAll('.colorway').forEach(el => {
+    el.addEventListener('click', () => {
+      if(el.classList.contains('unavailable')) return;
+      document.querySelectorAll('.colorway').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      const variant = el.querySelector('.colorway-name').textContent;
+      document.getElementById('buyVariantLabel').textContent = variant;
+      document.getElementById('buyBottle').classList.toggle('violet', variant.includes('Violeta'));
+    });
+  });
+
+  // Live countdown to next reminder (purely decorative demo)
+  let remaining = 2*3600 + 14*60 + 8;
+  const clockEl = document.getElementById('clock');
+  function tick(){
+    remaining = remaining > 0 ? remaining - 1 : 3*3600;
+    const h = String(Math.floor(remaining/3600)).padStart(2,'0');
+    const m = String(Math.floor((remaining%3600)/60)).padStart(2,'0');
+    const s = String(remaining%60).padStart(2,'0');
+    clockEl.textContent = `${h}:${m}:${s}`;
+    document.getElementById('chipClock').textContent = `${h}:${m}:${s}`;
+    document.getElementById('appClock').textContent = `${h}:${m}:${s}`;
+  }
+  setInterval(tick, 1000);
+
+  // Theme and local cart demo
+  const body = document.body;
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    body.classList.toggle('dark');
+    const isDark = body.classList.contains('dark');
+    themeToggle.textContent = isDark ? 'Modo claro' : 'Modo oscuro';
+    themeToggle.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+  });
+
+  const cartDrawer = document.getElementById('cartDrawer');
+  const cartCount = document.getElementById('cartCount');
+  const cartTotal = document.getElementById('cartTotal');
+  const cartColor = document.getElementById('cartColor');
+  const confirm = document.getElementById('purchaseConfirm');
+  const checkout = document.getElementById('checkout');
+  const qtyValue = document.getElementById('qtyValue');
+  const itemPrice = document.getElementById('itemPrice');
+  const checkoutModal = document.getElementById('checkoutModal');
+  const checkoutCard = document.getElementById('checkoutCard');
+  const checkoutForm = document.getElementById('checkoutForm');
+  let quantity = 1;
+  const unitPrice = 79990;
+  const money = value => '$' + value.toLocaleString('es-AR') + ' ARS';
+  function updateQuantity(){
+    qtyValue.textContent = quantity;
+    itemPrice.textContent = money(unitPrice) + ' c/u';
+    cartCount.textContent = quantity;
+    cartTotal.textContent = money(unitPrice * quantity);
+  }
+  function openCart(){ cartDrawer.classList.add('open'); cartDrawer.setAttribute('aria-hidden','false'); }
+  function closeCart(){ cartDrawer.classList.remove('open'); cartDrawer.setAttribute('aria-hidden','true'); }
+  document.getElementById('cartToggle').addEventListener('click', openCart);
+  document.getElementById('closeCart').addEventListener('click', closeCart);
+  document.getElementById('addToCart').addEventListener('click', () => {
+    const selected = document.querySelector('.colorway.active .colorway-name');
+    cartColor.textContent = selected ? selected.textContent : 'Azul RemBottle';
+    cartDrawer.classList.add('has-item');
+    updateQuantity();
+    checkout.disabled = false;
+    confirm.classList.add('show');
+    openCart();
+  });
+  document.getElementById('qtyMinus').addEventListener('click', () => { if(quantity > 1){ quantity--; updateQuantity(); } });
+  document.getElementById('qtyPlus').addEventListener('click', () => { quantity++; updateQuantity(); });
+  checkout.addEventListener('click', () => {
+    closeCart();
+    checkoutCard.classList.remove('complete');
+    checkoutModal.classList.add('open');
+    checkoutModal.setAttribute('aria-hidden','false');
+  });
+  function closeCheckout(){ checkoutModal.classList.remove('open'); checkoutModal.setAttribute('aria-hidden','true'); }
+  document.getElementById('closeCheckout').addEventListener('click', closeCheckout);
+  checkoutModal.addEventListener('click', event => { if(event.target === checkoutModal) closeCheckout(); });
+  checkoutForm.addEventListener('submit', event => { event.preventDefault(); checkoutCard.classList.add('complete'); });
+
+  // Checkout detail controls
+  const checkoutQty = document.getElementById('checkoutQty');
+  const checkoutPrice = document.getElementById('checkoutPrice');
+  const summaryProduct = document.getElementById('summaryProduct');
+  const summaryTotal = document.getElementById('summaryTotal');
+  const checkoutVariant = document.getElementById('checkoutVariant');
+  const checkoutQtyLabel = document.querySelector('.checkout-qty-label');
+  let couponApplied = false;
+  function updateCheckoutSummary(){
+    const checkoutQuantity = Number(checkoutQty.value);
+    const productTotal = unitPrice * checkoutQuantity;
+    const total = Math.max(0, productTotal - (couponApplied ? 10000 : 0));
+    const selected = document.querySelector('.colorway.active .colorway-name');
+    const variant = selected ? selected.textContent : 'Azul RemBottle';
+    checkoutVariant.textContent = variant + ' · Botella inteligente';
+    checkoutQtyLabel.textContent = checkoutQuantity + (checkoutQuantity === 1 ? ' unidad' : ' unidades');
+    checkoutPrice.innerHTML = '$' + productTotal.toLocaleString('es-AR') + ' <small>ARS</small>';
+    summaryProduct.textContent = money(productTotal);
+    summaryTotal.textContent = '$' + total.toLocaleString('es-AR');
+  }
+  checkoutQty.addEventListener('change', updateCheckoutSummary);
+  checkout.addEventListener('click', updateCheckoutSummary);
+  document.querySelectorAll('.payment-choice').forEach(choice => choice.addEventListener('click', () => {
+    document.querySelectorAll('.payment-choice').forEach(item => item.classList.remove('active'));
+    choice.classList.add('active');
+    const method = choice.dataset.method;
+    document.getElementById('cardPanel').classList.toggle('show', method === 'card');
+    document.getElementById('qrPanel').classList.toggle('show', method === 'mercadopago' || method === 'modo' || method === 'apple');
+    if(method === 'mercadopago'){
+      document.getElementById('qrTitle').textContent = 'Pagá con Mercado Pago';
+      document.getElementById('qrText').textContent = 'Abrí Mercado Pago y escaneá el QR para continuar.';
+    } else if(method === 'modo'){
+      document.getElementById('qrTitle').textContent = 'Pagá con MODO';
+      document.getElementById('qrText').textContent = 'Abrí MODO o la aplicación de tu banco y escaneá el QR.';
+    } else if(method === 'apple'){
+      document.getElementById('qrTitle').textContent = 'Continuar con Apple Pay';
+      document.getElementById('qrText').textContent = 'Escaneá el QR desde tu dispositivo para continuar con Apple Pay.';
+    }
+  }));
+  document.getElementById('editAddress').addEventListener('click', () => document.getElementById('name').focus());
+  document.getElementById('saveAddress').addEventListener('click', () => {
+    const name = document.getElementById('addressName').textContent;
+    if(name === 'Agregá una dirección de envío'){
+      document.getElementById('name').focus();
+      return;
+    }
+    document.getElementById('saveAddress').textContent = '✓ Dirección seleccionada';
+  });
+  document.getElementById('applyCoupon').addEventListener('click', () => {
+    const code = document.getElementById('couponCode').value.trim();
+    if(!code){
+      document.getElementById('couponMessage').textContent = 'Ingresá cualquier palabra para aplicar el cupón.';
+      document.getElementById('couponMessage').classList.add('show');
+      return;
+    }
+    couponApplied = true;
+    document.getElementById('couponDiscount').hidden = false;
+    document.getElementById('couponMessage').textContent = '✓ Cupón aplicado: $10.000 ARS de descuento.';
+    document.getElementById('couponMessage').classList.add('show');
+    document.getElementById('applyCoupon').textContent = 'Aplicado';
+    updateCheckoutSummary();
+  });
+  ['name','surname','region','postal','address'].forEach(id => document.getElementById(id).addEventListener('input', () => {
+    const name = [document.getElementById('name').value, document.getElementById('surname').value].filter(Boolean).join(' ');
+    const address = document.getElementById('address').value;
+    const region = document.getElementById('region').value;
+    const postal = document.getElementById('postal').value;
+    document.getElementById('addressName').textContent = name || 'Agregá una dirección de envío';
+    document.getElementById('addressLine').textContent = [address, region, postal].filter(Boolean).join(' · ') || 'Nombre, domicilio, ciudad y código postal';
+  }));
+  document.getElementById('waitlistForm').addEventListener('submit', event => {
+    event.preventDefault();
+    const email = document.getElementById('waitlistEmail');
+    const message = document.getElementById('waitlistMessage');
+    if(!email.checkValidity()){
+      message.textContent = 'Ingresá un correo electrónico válido.';
+      email.focus();
+      return;
+    }
+    message.textContent = '✓ ¡Listo! Te vamos a avisar cuando haya novedades de RemBottle.';
+    email.value = '';
+  });
+</script>
+
+</body>
+</html>
+
